@@ -36,6 +36,13 @@ public class CategoriaService {
 
     @Transactional
     public void eliminar(Long id) {
+        Categoria categoria = buscarPorId(id);
+        // Sin cascade REMOVE: una categoria con productos no se borra
+        if (!categoria.getProductos().isEmpty()) {
+            throw new IllegalStateException(
+                "No se puede eliminar la categoria: tiene " +
+                categoria.getProductos().size() + " producto(s) asociado(s).");
+        }
         repo.deleteById(id);
     }
 }
